@@ -1,3 +1,4 @@
+
 /* ******************************************
  * This server.js file is the primary file of the 
  * application. It is used to control the project.
@@ -11,6 +12,10 @@ const env = require("dotenv").config()
 const app = express()
 const static = require("./routes/static")
 const baseController = require("./controllers/baseController")
+const session = require("express-session")
+const pool = require('./database/')
+// const inventoryRoute = require("./routes/inventoryRoute")
+
 
 
 /* ***********************
@@ -22,12 +27,32 @@ app.use(expressLayouts)
 app.set("layout", "./layouts/layout") // not at views root
 
 /* ***********************
+ * Middleware
+ * ************************/
+ app.use(session({
+  store: new (require('connect-pg-simple')(session))({
+    createTableIfMissing: true,
+    pool,
+  }),
+  secret: process.env.SESSION_SECRET,
+  resave: true,
+  saveUninitialized: true,
+  name: 'sessionId',
+}))
+
+/* ***********************
  * Routes
  *************************/
 app.use(static)
 
 // Index route
 app.get("/", baseController.buildHome)
+
+// Inventory routes
+app.use("/inv", inventoryRoute)
+
+// app.use("/inv", require("./routes/inventory-route"))
+
 
 app.get("/", function(req, res) {
   res.render("index", {
