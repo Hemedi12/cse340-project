@@ -14,7 +14,7 @@ const static = require("./routes/static")
 const baseController = require("./controllers/baseController")
 const session = require("express-session")
 const pool = require('./database/')
-// const inventoryRoute = require("./routes/inventoryRoute")
+const inventoryRoute = require("./routes/inventoryRoute"); 
 
 
 
@@ -51,7 +51,6 @@ app.get("/", baseController.buildHome)
 // Inventory routes
 app.use("/inv", inventoryRoute)
 
-// app.use("/inv", require("./routes/inventory-route"))
 
 
 app.get("/", function(req, res) {
